@@ -33,7 +33,11 @@ dependencies {
             "com.jakewharton.rxbinding2:rxbinding-support-v4:$rxbinding_version",
             "com.jakewharton.rxbinding2:rxbinding-appcompat-v7:$rxbinding_version",
             "com.jakewharton.rxbinding2:rxbinding-design:$rxbinding_version",
-            "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+            "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version",
+            "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version",
+            "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version",
+            "com.google.code.gson:gson:$gson_version",
+            "com.github.kittinunf.fuel:fuel-android:$fuel_version"
 
     testImplementation "junit:junit:$junit_version",
             "io.mockk:mockk:$mockk_version"

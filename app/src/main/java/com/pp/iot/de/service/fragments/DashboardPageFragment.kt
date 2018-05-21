@@ -14,10 +14,18 @@ import android.content.Intent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.bluetooth.BluetoothAdapter
+import android.content.Context.SENSOR_SERVICE
 import android.content.IntentFilter
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
 
 
-class DashboardPageFragment : FragmentBase<DashboardViewModel>(DashboardViewModel::class.java) {
+class DashboardPageFragment : FragmentBase<DashboardViewModel>(DashboardViewModel::class.java), SensorEventListener {
+
     override val layoutResourceId: Int
         get() = R.layout.dashboard_page
 
@@ -26,13 +34,16 @@ class DashboardPageFragment : FragmentBase<DashboardViewModel>(DashboardViewMode
         viewModel.navigatedTo()
         locationManager = context?.getSystemService(LOCATION_SERVICE) as LocationManager
 
-        activity?.registerReceiver(receiver, IntentFilter(BluetoothDevice.ACTION_FOUND));
+        activity?.registerReceiver(receiver, IntentFilter(BluetoothDevice.ACTION_FOUND))
+        sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL)
     }
 
     private var locationManager: LocationManager? = null
 
     private val locationListener = object : LocationListener {
         override fun onLocationChanged(location: Location) {
+            viewModel.longitude = location.longitude
+            viewModel.latitude = location.latitude
             LocationText.text = "" + location.longitude + ":" + location.latitude
         }
 
@@ -50,20 +61,33 @@ class DashboardPageFragment : FragmentBase<DashboardViewModel>(DashboardViewMode
             if (BluetoothDevice.ACTION_FOUND == action) {
                 val rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI, java.lang.Short.MIN_VALUE)
                 val name = intent.getStringExtra(BluetoothDevice.EXTRA_NAME)
-                LocationText.text = "" + LocationText.text + name + " => " + rssi + "dBm\n";
+                LocationText.text = "" + LocationText.text + name + " => " + rssi + "dBm\n"
             }
         }
     }
 
+    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
+    }
+
+    override fun onSensorChanged(sensorEvent: SensorEvent?) {
+        val temperatureTable = sensorEvent?.values
+        val temperature = temperatureTable!![0]
+    }
+
+    private val sensorManager: SensorManager = context?.getSystemService(SENSOR_SERVICE) as SensorManager
+    private val sensor: Sensor = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE)
+
     override fun initBindings() {
         LocationButton.setOnClickListener { _ ->
             try {
-                locationManager?.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0L, 0f, locationListener);
+                locationManager?.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0L, 0f, locationListener)
             } catch (ex: SecurityException) {
                 Log.d("DPF", "Security Exception, no location available")
             }
         }
 
         BluetoothDevicesButton.setOnClickListener { _ -> BTAdapter.startDiscovery() }
+
+        SendLocationButton.setOnClickListener { async(UI) { viewModel.sendCurrentLocation() } }
     }
 }

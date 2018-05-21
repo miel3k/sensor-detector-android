@@ -32,5 +32,13 @@
             android:layout_marginTop="16dp"
             android:gravity="center"
             android:text="Get Bluetooth Devices" />
+
+        <Button
+            android:id="@+id/SendLocationButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:text="Send Current Location" />
     </LinearLayout>
 </FrameLayout>

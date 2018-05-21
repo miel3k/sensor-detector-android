@@ -2,6 +2,8 @@ package com.pp.iot.de.service.viewModels
 
 import com.pp.iot.de.interfaces.ApiCommunicator
 import com.pp.iot.de.interfaces.navigation.NavigationManger
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.async
 
 class DashboardViewModel(private val apiCommunicator: ApiCommunicator,
                          private val navigationManger: NavigationManger) : ViewModelBase() {
@@ -13,12 +15,15 @@ class DashboardViewModel(private val apiCommunicator: ApiCommunicator,
         //we can begin here any operations that are required by current screen
     }
 
-    //TODO Think about commands?
-    //TODO Add test api call here.
-    fun onHelloButtonClick() {
-        helloText = "Hello"
-    }
-
-    var helloText: String by RaisePropertyChangedDelegate("")
     var boundText: String by RaisePropertyChangedDelegate("")
+    var longitude: Double by RaisePropertyChangedDelegate(-1.0)
+    var latitude: Double by RaisePropertyChangedDelegate(-1.0)
+
+    suspend fun sendCurrentLocation(){
+        val res = async(CommonPool) {
+            apiCommunicator.sendCurrentLocalization(
+                    longitude, latitude
+            )
+        }.await()
+    }
 }
