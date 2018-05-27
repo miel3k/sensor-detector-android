@@ -24,7 +24,7 @@ import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 
 
-class DashboardPageFragment : FragmentBase<DashboardViewModel>(DashboardViewModel::class.java) {
+class DashboardPageFragment : FragmentBase<DashboardViewModel>(DashboardViewModel::class.java), SensorEventListener {
 
     override val layoutResourceId: Int
         get() = R.layout.dashboard_page
@@ -35,7 +35,9 @@ class DashboardPageFragment : FragmentBase<DashboardViewModel>(DashboardViewMode
         locationManager = context?.getSystemService(LOCATION_SERVICE) as LocationManager
 
         activity?.registerReceiver(receiver, IntentFilter(BluetoothDevice.ACTION_FOUND))
-        //sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL)
+        sensorManager = context?.getSystemService(SENSOR_SERVICE) as SensorManager
+        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE)
+        sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL)
     }
 
     private var locationManager: LocationManager? = null
@@ -66,16 +68,16 @@ class DashboardPageFragment : FragmentBase<DashboardViewModel>(DashboardViewMode
         }
     }
 
-    /*override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
+    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
     }
 
     override fun onSensorChanged(sensorEvent: SensorEvent?) {
         val temperatureTable = sensorEvent?.values
         val temperature = temperatureTable!![0]
-    }*/
+    }
 
-    //private val sensorManager: SensorManager = context?.getSystemService(SENSOR_SERVICE) as SensorManager
-    //private val sensor: Sensor = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE)
+    private lateinit var sensorManager: SensorManager
+    private lateinit var sensor: Sensor
 
     override fun initBindings() {
         LocationButton.setOnClickListener { _ ->
