@@ -26,4 +26,10 @@ class DashboardViewModel(private val apiCommunicator: ApiCommunicator,
             )
         }.await()
     }
+
+    suspend fun getData() {
+        val res = async(CommonPool) {
+            apiCommunicator.getDataFromServer()
+        }
+    }
 }

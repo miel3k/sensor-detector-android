@@ -89,5 +89,7 @@ class DashboardPageFragment : FragmentBase<DashboardViewModel>(DashboardViewMode
         BluetoothDevicesButton.setOnClickListener { _ -> BTAdapter.startDiscovery() }
 
         SendLocationButton.setOnClickListener { async(UI) { viewModel.sendCurrentLocation() } }
+
+        ShowDataButton.setOnClickListener { async(UI) { viewModel.getData() } }
     }
 }

@@ -19,6 +19,29 @@ class DefaultApiCommunicator : ApiCommunicator {
     private val apiClient: FuelManager = FuelManager()
     private val basePath: String = ""
 
+    override suspend fun getDataFromServer(): Boolean {
+//        apiClient.baseHeaders = mapOf(
+//                "Content-Type" to "application/json"
+//        )
+//
+//        val response = apiClient
+//                .request(
+//                        Method.GET,
+//                        basePath
+//                ).body(
+//                        GsonConvert.serializeObject(
+//                                Temperature(
+//                                        temperature
+//                                )
+//                        )
+//                )
+//                .response()
+//                .handleResponse()
+//
+//        return response.second.statusCode.isSuccessfulStatusCode()
+        return true
+    }
+
     override suspend fun sendDeviceTemperature(temperature: Float): Boolean {
         apiClient.baseHeaders = mapOf(
                 "Content-Type" to "application/json"
