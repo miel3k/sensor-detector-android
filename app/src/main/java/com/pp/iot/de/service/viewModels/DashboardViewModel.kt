@@ -16,11 +16,11 @@ class DashboardViewModel(private val apiCommunicator: ApiCommunicator,
 
     var boundText: String by RaisePropertyChangedDelegate("")
 
-    fun onDeviceDataViewButtonClick() {
+    fun navigateDeviceDataView() {
         navigationManger.navigate(PageIndex.DeviceDataPage)
     }
 
-    fun onServerDataViewButtonClick() {
+    fun navigateServerDataView() {
         navigationManger.navigate(PageIndex.ServerDataPage)
     }
 }

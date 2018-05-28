@@ -13,9 +13,9 @@ import android.util.Log
 import com.pp.iot.de.models.model.Measurement
 import com.pp.iot.de.service.R
 import com.pp.iot.de.service.viewModels.DeviceDataViewModel
+import kotlinx.android.synthetic.main.device_data_page.LightText
 import kotlinx.android.synthetic.main.device_data_page.LocationText
-import kotlinx.android.synthetic.main.device_data_page.SendLocationButton
-import kotlinx.android.synthetic.main.device_data_page.TemperatureText
+import kotlinx.android.synthetic.main.device_data_page.SendDataButton
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 
@@ -33,9 +33,8 @@ class DeviceDataPageFragment : FragmentBase<DeviceDataViewModel>(DeviceDataViewM
 
     private val locationListener = object : LocationListener {
         override fun onLocationChanged(location: Location) {
-            val measurement = Measurement("7", "" + location.longitude + "," + location.longitude)
+            val measurement = Measurement("7", "" + location.latitude + "," + location.longitude)
             viewModel.gpsMeasurement = measurement
-            LocationText.text = "" + location.longitude + "," + location.latitude
         }
 
         override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {}
@@ -47,26 +46,39 @@ class DeviceDataPageFragment : FragmentBase<DeviceDataViewModel>(DeviceDataViewM
     }
 
     override fun onSensorChanged(sensorEvent: SensorEvent?) {
-        val temperatureTable = sensorEvent?.values
-        val measurement = Measurement("1", temperatureTable!![0].toString())
-        viewModel.temperatureMeasurement = measurement
-        TemperatureText.text = temperatureTable[0].toString()
+        val lightTable = sensorEvent?.values
+        val measurement = Measurement("3", lightTable!![0].toString())
+        viewModel.lightMeasurement = measurement
     }
 
     private lateinit var sensorManager: SensorManager
     private lateinit var sensor: Sensor
 
     override fun initBindings() {
+        bindings.add(createBinding(viewModel::gpsMeasurement).subscribe {
+                with(LocationText) {
+                    text = it.value
+                }
+
+        })
+
+        bindings.add(createBinding(viewModel::lightMeasurement).subscribe {
+            with(LightText) {
+                text = it.value
+            }
+
+        })
+
         locationManager = context?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         sensorManager = context?.getSystemService(Context.SENSOR_SERVICE) as SensorManager
-        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE)
+        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT)
         sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL)
         try {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0L, 0f, locationListener)
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0L, 0f, locationListener)
         } catch (ex: SecurityException) {
             Log.d("DPF", "Security Exception, no location available")
         }
 
-        SendLocationButton.setOnClickListener { async(UI) { viewModel.sendMeasurements() } }
+        SendDataButton.setOnClickListener { async(UI) { viewModel.sendMeasurements() } }
     }
 }

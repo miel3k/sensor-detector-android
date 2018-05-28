@@ -3,13 +3,26 @@ package com.pp.iot.de.service.viewModels
 import android.util.Log
 import com.github.kittinunf.result.Result
 import com.pp.iot.de.interfaces.ApiCommunicator
+import com.pp.iot.de.interfaces.DispatcherAdapter
+import com.pp.iot.de.interfaces.Schedulable
 import com.pp.iot.de.interfaces.navigation.NavigationManger
 import com.pp.iot.de.models.model.ExampleMeasurement
+import com.pp.iot.de.service.utils.scheduleAtPeriod
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.async
+import java.util.Timer
 
 class ServerDataViewModel (private val apiCommunicator: ApiCommunicator,
-                           private val navigationManger: NavigationManger) : ViewModelBase() {
+                           private val navigationManger: NavigationManger,
+                           private val dispatcherAdapter: DispatcherAdapter) : ViewModelBase(), Schedulable {
+    private val getMeasurementPeriod: Long = 60000
+
+    override fun runTask(timer: Timer) {
+        timer.scheduleAtPeriod(getMeasurementPeriod, {
+            dispatcherAdapter.run({ getMeasurement() })
+        })
+    }
+
     /**
      * Meant to be called whenever page becomes active.
      */

@@ -16,7 +16,7 @@ class DashboardPageFragment : FragmentBase<DashboardViewModel>(DashboardViewMode
     }
 
     override fun initBindings() {
-        DeviceDataViewButton.setOnClickListener { viewModel.onDeviceDataViewButtonClick() }
-        ServerDataViewButton.setOnClickListener { viewModel.onServerDataViewButtonClick() }
+        DeviceDataViewButton.setOnClickListener { viewModel.navigateDeviceDataView() }
+        ServerDataViewButton.setOnClickListener { viewModel.navigateServerDataView() }
     }
 }
