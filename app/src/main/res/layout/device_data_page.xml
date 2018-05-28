@@ -9,20 +9,28 @@
         android:layout_gravity="center"
         android:orientation="vertical">
 
-        <Button
-            android:id="@+id/DeviceDataViewButton"
-            android:layout_width="fill_parent"
+        <TextView
+            android:id="@+id/LocationText"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:gravity="center"
-            android:text="Go to device data view" />
+            android:layout_gravity="center"
+            android:text=""
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/TemperatureText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text=""
+            android:textSize="18sp" />
 
         <Button
-            android:id="@+id/ServerDataViewButton"
+            android:id="@+id/SendLocationButton"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:gravity="center"
-            android:text="Go to server data view" />
+            android:text="Send Current Location" />
     </LinearLayout>
 </FrameLayout>

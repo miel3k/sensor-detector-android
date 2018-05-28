@@ -2,8 +2,6 @@ package com.pp.iot.de.service.activities
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
-import com.github.salomonbrys.kodein.description
 import com.github.salomonbrys.kodein.instance
 import com.pp.iot.de.service.App
 import com.pp.iot.de.service.R
@@ -14,6 +12,8 @@ import com.pp.iot.de.service.navigation.DefaultNavigationManager
 import com.pp.iot.de.service.viewModels.MainViewModel
 import com.pp.iot.de.interfaces.navigation.NavigationManger
 import com.pp.iot.de.models.enums.PageIndex
+import com.pp.iot.de.service.fragments.DeviceDataPageFragment
+import com.pp.iot.de.service.fragments.ServerDataPageFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -29,7 +29,10 @@ class MainActivity : AppCompatActivity() {
 
         navigationManager = DefaultNavigationManager(
                 mapOf(
-                        PageIndex.MainPage to CachedPageProvider<NavigationFragmentBase>({ DashboardPageFragment() })
+                        PageIndex.MainPage to CachedPageProvider<NavigationFragmentBase>({ DashboardPageFragment() }),
+                        PageIndex.DeviceDataPage to CachedPageProvider<NavigationFragmentBase>({ DeviceDataPageFragment() }),
+                        PageIndex.ServerDataPage to CachedPageProvider<NavigationFragmentBase>({ ServerDataPageFragment() })
+
                 ),
                 RootView,
                 supportFragmentManager

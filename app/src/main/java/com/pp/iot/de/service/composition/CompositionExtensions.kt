@@ -6,6 +6,8 @@ import com.pp.iot.de.service.businessLogic.DefaultApiCommunicator
 import com.pp.iot.de.service.viewModels.DashboardViewModel
 import com.pp.iot.de.service.viewModels.MainViewModel
 import com.pp.iot.de.interfaces.ApiCommunicator
+import com.pp.iot.de.service.viewModels.DeviceDataViewModel
+import com.pp.iot.de.service.viewModels.ServerDataViewModel
 import pw.kmp.kodeinject.injectedSingleton
 
 fun Kodein.registerDependencies(): Kodein {
@@ -20,5 +22,7 @@ fun Kodein.registerViewModels(): Kodein {
         extend(this@registerViewModels)
         bind<MainViewModel>() with injectedSingleton()
         bind<DashboardViewModel>() with injectedSingleton()
+        bind<DeviceDataViewModel>() with injectedSingleton()
+        bind<ServerDataViewModel>() with injectedSingleton()
     }
 }
