@@ -2,6 +2,8 @@ package com.pp.iot.de.service.activities
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
+import com.github.salomonbrys.kodein.description
 import com.github.salomonbrys.kodein.instance
 import com.pp.iot.de.service.App
 import com.pp.iot.de.service.R

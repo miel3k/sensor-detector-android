@@ -2,10 +2,16 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
+kotlin {
+    experimental {
+        coroutines "enable"
+    }
+}
+
 android {
     compileSdkVersion 26
     defaultConfig {
-        applicationId "com.idemia.ii.fb.conference"
+        applicationId "com.pp.iot.de.service"
         minSdkVersion 21
         targetSdkVersion 26
         versionCode 1

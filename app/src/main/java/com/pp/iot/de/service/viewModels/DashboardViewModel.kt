@@ -1,7 +1,11 @@
 package com.pp.iot.de.service.viewModels
 
+import android.util.Log
+import com.github.kittinunf.result.Result
 import com.pp.iot.de.interfaces.ApiCommunicator
 import com.pp.iot.de.interfaces.navigation.NavigationManger
+import com.pp.iot.de.models.model.ExampleMeasurement
+import com.pp.iot.de.models.model.Measurement
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.async
 
@@ -16,20 +20,41 @@ class DashboardViewModel(private val apiCommunicator: ApiCommunicator,
     }
 
     var boundText: String by RaisePropertyChangedDelegate("")
-    var longitude: Double by RaisePropertyChangedDelegate(-1.0)
-    var latitude: Double by RaisePropertyChangedDelegate(-1.0)
 
-    suspend fun sendCurrentLocation(){
+    var measurementsList: MutableList<Measurement> by RaisePropertyChangedDelegate(mutableListOf())
+    var gpsMeasurement: Measurement by RaisePropertyChangedDelegate(Measurement("", ""))
+    var temperatureMeasurement: Measurement by RaisePropertyChangedDelegate(Measurement("", ""))
+
+    var exampleMeasurementsList: List<ExampleMeasurement> by RaisePropertyChangedDelegate(listOf())
+
+    suspend fun sendMeasurements(){
+        measurementsList.add(gpsMeasurement)
+        measurementsList.add(temperatureMeasurement)
+
         val res = async(CommonPool) {
-            apiCommunicator.sendCurrentLocalization(
-                    longitude, latitude
+            apiCommunicator.sendDeviceMeasurements(
+                    measurementsList
             )
         }.await()
+
+        if(res){
+            measurementsList = mutableListOf()
+        }
     }
 
-    suspend fun getData() {
-        val res = async(CommonPool) {
-            apiCommunicator.getDataFromServer()
+    suspend fun getMeasurement() {
+        val result = async(CommonPool) {
+            apiCommunicator.getExampleMeasurement()
+        }.await()
+
+        when (result) {
+            is Result.Failure -> {
+                Log.e("DVM", result.toString())
+            }
+            is Result.Success -> {
+                exampleMeasurementsList = result.value
+                Log.e("DVM", result.toString())
+            }
         }
     }
 }

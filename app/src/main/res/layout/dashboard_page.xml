@@ -17,6 +17,14 @@
             android:text=""
             android:textSize="18sp" />
 
+        <TextView
+            android:id="@+id/TemperatureText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text=""
+            android:textSize="18sp" />
+
         <Button
             android:id="@+id/ShowDataButton"
             android:layout_width="fill_parent"
@@ -24,22 +32,6 @@
             android:layout_marginTop="16dp"
             android:gravity="center"
             android:text="Show Data" />
-
-        <Button
-            android:id="@+id/LocationButton"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:gravity="center"
-            android:text="Get Current Location" />
-
-        <Button
-            android:id="@+id/BluetoothDevicesButton"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:gravity="center"
-            android:text="Get Bluetooth Devices" />
 
         <Button
             android:id="@+id/SendLocationButton"

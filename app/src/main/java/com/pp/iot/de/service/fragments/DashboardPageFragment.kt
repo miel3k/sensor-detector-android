@@ -9,17 +9,12 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
-import android.bluetooth.BluetoothDevice
-import android.content.Intent
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.bluetooth.BluetoothAdapter
 import android.content.Context.SENSOR_SERVICE
-import android.content.IntentFilter
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import com.pp.iot.de.models.model.Measurement
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 
@@ -33,20 +28,18 @@ class DashboardPageFragment : FragmentBase<DashboardViewModel>(DashboardViewMode
         super.navigatedTo()
         viewModel.navigatedTo()
         locationManager = context?.getSystemService(LOCATION_SERVICE) as LocationManager
-
-        activity?.registerReceiver(receiver, IntentFilter(BluetoothDevice.ACTION_FOUND))
         sensorManager = context?.getSystemService(SENSOR_SERVICE) as SensorManager
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE)
         sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL)
     }
 
-    private var locationManager: LocationManager? = null
+    private lateinit var locationManager: LocationManager
 
     private val locationListener = object : LocationListener {
         override fun onLocationChanged(location: Location) {
-            viewModel.longitude = location.longitude
-            viewModel.latitude = location.latitude
-            LocationText.text = "" + location.longitude + ":" + location.latitude
+            val measurement = Measurement("7", "" + location.longitude + "," + location.longitude)
+            viewModel.gpsMeasurement = measurement
+            LocationText.text = "" + location.longitude + "," + location.latitude
         }
 
         override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {}
@@ -54,44 +47,28 @@ class DashboardPageFragment : FragmentBase<DashboardViewModel>(DashboardViewMode
         override fun onProviderDisabled(provider: String) {}
     }
 
-    private val BTAdapter = BluetoothAdapter.getDefaultAdapter()
-
-    private val receiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-
-            val action = intent.action
-            if (BluetoothDevice.ACTION_FOUND == action) {
-                val rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI, java.lang.Short.MIN_VALUE)
-                val name = intent.getStringExtra(BluetoothDevice.EXTRA_NAME)
-                LocationText.text = "" + LocationText.text + name + " => " + rssi + "dBm\n"
-            }
-        }
-    }
-
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
     }
 
     override fun onSensorChanged(sensorEvent: SensorEvent?) {
         val temperatureTable = sensorEvent?.values
-        val temperature = temperatureTable!![0]
+        val measurement = Measurement("1", temperatureTable!![0].toString())
+        viewModel.temperatureMeasurement = measurement
+        TemperatureText.text = temperatureTable[0].toString()
     }
 
     private lateinit var sensorManager: SensorManager
     private lateinit var sensor: Sensor
 
     override fun initBindings() {
-        LocationButton.setOnClickListener { _ ->
-            try {
-                locationManager?.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0L, 0f, locationListener)
-            } catch (ex: SecurityException) {
-                Log.d("DPF", "Security Exception, no location available")
-            }
+        try {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0L, 0f, locationListener)
+        } catch (ex: SecurityException) {
+            Log.d("DPF", "Security Exception, no location available")
         }
 
-        BluetoothDevicesButton.setOnClickListener { _ -> BTAdapter.startDiscovery() }
+        SendLocationButton.setOnClickListener { async(UI) { viewModel.sendMeasurements() } }
 
-        SendLocationButton.setOnClickListener { async(UI) { viewModel.sendCurrentLocation() } }
-
-        ShowDataButton.setOnClickListener { async(UI) { viewModel.getData() } }
+        ShowDataButton.setOnClickListener { async(UI) { viewModel.getMeasurement() } }
     }
 }

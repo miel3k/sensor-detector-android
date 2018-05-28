@@ -7,9 +7,11 @@ import com.github.kittinunf.fuel.core.Method
 import com.github.kittinunf.fuel.core.Request
 import com.github.kittinunf.fuel.core.Response
 import com.github.kittinunf.result.Result
+import com.google.gson.reflect.TypeToken
 import com.pp.iot.de.interfaces.ApiCommunicator
-import com.pp.iot.de.models.model.Location
-import com.pp.iot.de.models.model.Temperature
+import com.pp.iot.de.models.model.ExampleMeasurement
+import com.pp.iot.de.models.model.Measurement
+import com.pp.iot.de.models.model.MeasurementsList
 import com.pp.iot.de.service.utils.GsonConvert
 
 /**
@@ -17,74 +19,59 @@ import com.pp.iot.de.service.utils.GsonConvert
  */
 class DefaultApiCommunicator : ApiCommunicator {
     private val apiClient: FuelManager = FuelManager()
-    private val basePath: String = ""
+    //private val basePath: String = "https://problem-production.herokuapp.com"
+    private val basePath: String = "http://10.0.2.2:8080"
 
-    override suspend fun getDataFromServer(): Boolean {
-//        apiClient.baseHeaders = mapOf(
-//                "Content-Type" to "application/json"
-//        )
-//
-//        val response = apiClient
-//                .request(
-//                        Method.GET,
-//                        basePath
-//                ).body(
-//                        GsonConvert.serializeObject(
-//                                Temperature(
-//                                        temperature
-//                                )
-//                        )
-//                )
-//                .response()
-//                .handleResponse()
-//
-//        return response.second.statusCode.isSuccessfulStatusCode()
-        return true
-    }
-
-    override suspend fun sendDeviceTemperature(temperature: Float): Boolean {
+    override suspend fun sendDeviceMeasurements(measurements: List<Measurement>): Boolean {
         apiClient.baseHeaders = mapOf(
                 "Content-Type" to "application/json"
         )
+        apiClient.basePath = basePath
 
         val response = apiClient
                 .request(
-                        Method.GET,
-                        basePath
+                        Method.POST,
+                        "/collect"
                 ).body(
                         GsonConvert.serializeObject(
-                                Temperature(
-                                        temperature
+                                MeasurementsList(
+                                        measurements
                                 )
                         )
                 )
                 .response()
                 .handleResponse()
+        Log.i("TAG", response.toString())
 
         return response.second.statusCode.isSuccessfulStatusCode()
     }
 
-    override suspend fun sendCurrentLocalization(longitude: Double, latitude: Double): Boolean {
+    override suspend fun getExampleMeasurement(
+    ): Result<List<ExampleMeasurement>, Exception> {
         apiClient.baseHeaders = mapOf(
                 "Content-Type" to "application/json"
         )
+        apiClient.basePath = basePath
 
         val response = apiClient
                 .request(
                         Method.GET,
-                        basePath
-                ).body(
-                        GsonConvert.serializeObject(
-                                Location(
-                                        longitude,
-                                        latitude
-                                )
-                        )
+                        "/api/temperatureMeasurement/2"
                 )
                 .response()
-                .handleResponse()
 
-        return response.second.statusCode.isSuccessfulStatusCode()
+        Log.e("TAG", response.toString())
+
+        response.third.fold({
+            return Result.of {
+                GsonConvert.deserializeObject<List<ExampleMeasurement>>(
+                        response.third.get().toString(Charsets.UTF_8),
+                        object : TypeToken<List<ExampleMeasurement>>() {}.type
+                )
+            }
+        }, {
+            return Result.error(it)
+        })
     }
 
     private fun Triple<Request, Response, Result<ByteArray, FuelError>>.handleResponse(): Triple<Request, Response, Result<ByteArray, FuelError>> {
