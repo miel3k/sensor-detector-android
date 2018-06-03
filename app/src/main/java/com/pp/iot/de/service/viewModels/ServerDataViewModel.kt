@@ -33,7 +33,7 @@ class ServerDataViewModel (private val apiCommunicator: ApiCommunicator,
 
     var boundText: String by RaisePropertyChangedDelegate("")
 
-    var exampleMeasurementsList: List<ExampleMeasurement> by RaisePropertyChangedDelegate(listOf())
+    var exampleMeasurementsList: List<ExampleMeasurement> by RaisePropertyChangedDelegate(listOf(ExampleMeasurement(1, 1000.0)))
 
     suspend fun getMeasurement() {
         val result = async(CommonPool) {

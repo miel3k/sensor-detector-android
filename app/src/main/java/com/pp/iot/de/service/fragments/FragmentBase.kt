@@ -34,4 +34,14 @@ abstract class FragmentBase<TViewModel : ViewModelBase>(private val classToken: 
             }
         })
     }
+
+    /**
+     * Creates one way binding and invokes update after subscription.
+     */
+    protected inline fun <reified T>
+            KProperty<T>.subscribeOneWay(noinline binding: (T) -> Unit): Disposable {
+        val subscription = createBinding(this).subscribe(binding)
+        binding(this.call())
+        return subscription
+    }
 }
