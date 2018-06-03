@@ -9,6 +9,7 @@ import com.github.kittinunf.fuel.core.Response
 import com.github.kittinunf.result.Result
 import com.google.gson.reflect.TypeToken
 import com.pp.iot.de.interfaces.ApiCommunicator
+import com.pp.iot.de.models.model.Device
 import com.pp.iot.de.models.model.ExampleMeasurement
 import com.pp.iot.de.models.model.Measurement
 import com.pp.iot.de.models.model.MeasurementsList
@@ -18,9 +19,10 @@ import com.pp.iot.de.service.utils.GsonConvert
  * Class responsible for communication with backend server.
  */
 class DefaultApiCommunicator : ApiCommunicator {
+
     private val apiClient: FuelManager = FuelManager()
-    //private val basePath: String = "https://problem-production.herokuapp.com"
-    private val basePath: String = "http://10.0.2.2:8080"
+    private val basePath: String = "https://problem-production.herokuapp.com"
+    //private val basePath: String = "http://10.0.2.2:8080"
 
     override suspend fun sendDeviceMeasurements(measurements: List<Measurement>): Boolean {
         apiClient.baseHeaders = mapOf(
@@ -67,6 +69,33 @@ class DefaultApiCommunicator : ApiCommunicator {
                 GsonConvert.deserializeObject<List<ExampleMeasurement>>(
                         response.third.get().toString(Charsets.UTF_8),
                         object : TypeToken<List<ExampleMeasurement>>() {}.type
+                )
+            }
+        }, {
+            return Result.error(it)
+        })
+    }
+
+    override suspend fun getDevices(): Result<List<Device>,Exception> {
+        apiClient.baseHeaders = mapOf(
+                "Content-Type" to "application/json"
+        )
+        apiClient.basePath = basePath
+
+        val response = apiClient
+                .request(
+                        Method.GET,
+                        "/api/devices"
+                )
+                .response()
+
+        Log.e("TAG", response.toString())
+
+        response.third.fold({
+            return Result.of {
+                GsonConvert.deserializeObject<List<Device>>(
+                        response.third.get().toString(Charsets.UTF_8),
+                        object : TypeToken<List<Device>>() {}.type
                 )
             }
         }, {
