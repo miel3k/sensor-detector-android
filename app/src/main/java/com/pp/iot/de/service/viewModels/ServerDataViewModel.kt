@@ -20,9 +20,6 @@ class ServerDataViewModel (private val apiCommunicator: ApiCommunicator,
 
     override fun runTask(timer: Timer) {
         timer.scheduleAtPeriod(getDataFromServerPeriod, {
-            dispatcherAdapter.run({ getMeasurement() })
-        })
-        timer.scheduleAtPeriod(getDataFromServerPeriod, {
             dispatcherAdapter.run({ getDevices() })
         })
     }
@@ -35,9 +32,6 @@ class ServerDataViewModel (private val apiCommunicator: ApiCommunicator,
         //we can begin here any operations that are required by current screen
     }
 
-    var boundText: String by RaisePropertyChangedDelegate("")
-
-    var exampleMeasurementsList: List<ExampleMeasurement> by RaisePropertyChangedDelegate(listOf(ExampleMeasurement(1, 1000.0)))
     var devicesList: List<Device> by RaisePropertyChangedDelegate(listOf())
 
     suspend fun getDevices() {
@@ -51,22 +45,6 @@ class ServerDataViewModel (private val apiCommunicator: ApiCommunicator,
             }
             is Result.Success -> {
                 devicesList = result.value
-                Log.e("DVM", result.toString())
-            }
-        }
-    }
-
-    suspend fun getMeasurement() {
-        val result = async(CommonPool) {
-            apiCommunicator.getExampleMeasurement()
-        }.await()
-
-        when (result) {
-            is Result.Failure -> {
-                Log.e("DVM", result.toString())
-            }
-            is Result.Success -> {
-                exampleMeasurementsList = result.value
                 Log.e("DVM", result.toString())
             }
         }
