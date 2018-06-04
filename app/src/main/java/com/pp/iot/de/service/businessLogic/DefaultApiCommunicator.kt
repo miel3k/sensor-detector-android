@@ -58,7 +58,7 @@ class DefaultApiCommunicator : ApiCommunicator {
         val response = apiClient
                 .request(
                         Method.GET,
-                        "/api/temperatureMeasurement/2"
+                        "/api/devices/"+device.id
                 )
                 .response()
 

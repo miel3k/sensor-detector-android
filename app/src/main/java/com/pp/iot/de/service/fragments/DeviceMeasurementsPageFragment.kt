@@ -3,20 +3,20 @@ package com.pp.iot.de.service.fragments
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
-import com.pp.iot.de.models.model.Device
+import com.pp.iot.de.models.model.ExampleMeasurement
 import com.pp.iot.de.service.R
 import com.pp.iot.de.service.recyclerAdapters.BasicRecyclerAdapter
-import com.pp.iot.de.service.viewModels.ServerDataViewModel
+import com.pp.iot.de.service.viewModels.DeviceMeasurementsViewModel
 import kotlinx.android.synthetic.main.device_item.view.*
 import kotlinx.android.synthetic.main.server_data_page.*
 
-class ServerDataPageFragment : FragmentBase<ServerDataViewModel>(ServerDataViewModel::class.java) {
+class DeviceMeasurementsPageFragment : FragmentBase<DeviceMeasurementsViewModel>(DeviceMeasurementsViewModel::class.java) {
     override fun initBindings() {
         MeasurementsList.layoutManager = LinearLayoutManager(context)
-        bindings.add(viewModel::devicesList.subscribeOneWay {
+        bindings.add(viewModel::measurementsList.subscribeOneWay {
             MeasurementsList.adapter =
                     BasicRecyclerAdapter(
-                            viewModel.devicesList,
+                            viewModel.measurementsList,
                             this::itemDataTemplate,
                             this::itemItemTemplate,
                             this::itemHolderTemplate
@@ -32,7 +32,7 @@ class ServerDataPageFragment : FragmentBase<ServerDataViewModel>(ServerDataViewM
         viewModel.navigatedTo()
     }
 
-    private fun itemDataTemplate(item: Device, holder: ItemViewHolder) {
+    private fun itemDataTemplate(item: ExampleMeasurement, holder: ItemViewHolder) {
         holder.bind(item)
     }
 
@@ -46,11 +46,11 @@ class ServerDataPageFragment : FragmentBase<ServerDataViewModel>(ServerDataViewM
 
     inner class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         init {
-            itemView.setOnClickListener({ viewModel.navigateDeviceMeasurementsView() })
+            itemView.setOnClickListener({ itemView.ItemTextView.text = "click" })
         }
 
-        fun bind(device: Device) {
-            itemView.ItemTextView.text = device.name
+        fun bind(measurement: ExampleMeasurement) {
+            itemView.ItemTextView.text = measurement.measurement.toString()
         }
     }
 }

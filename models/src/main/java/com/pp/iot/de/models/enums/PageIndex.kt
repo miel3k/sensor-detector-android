@@ -6,5 +6,6 @@ package com.pp.iot.de.models.enums
 enum class PageIndex {
     MainPage,
     DeviceDataPage,
-    ServerDataPage
+    ServerDataPage,
+    DeviceMeasurementsPage
 }

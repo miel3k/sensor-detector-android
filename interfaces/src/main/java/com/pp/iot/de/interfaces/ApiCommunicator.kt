@@ -7,6 +7,6 @@ import com.pp.iot.de.models.model.Measurement
 
 interface ApiCommunicator {
     suspend fun sendDeviceMeasurements(measurements: List<Measurement>) : Boolean
-    suspend fun getExampleMeasurement(): Result<List<ExampleMeasurement>, Exception>
     suspend fun getDevices(): Result<List<Device>, Exception>
+    suspend fun getMeasurementsForDevice(device: Device): Result<List<ExampleMeasurement>, Exception>
 }

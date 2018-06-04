@@ -2,26 +2,27 @@ package com.pp.iot.de.service.viewModels
 
 import android.util.Log
 import com.github.kittinunf.result.Result
+import com.github.salomonbrys.kodein.instance
 import com.pp.iot.de.interfaces.ApiCommunicator
 import com.pp.iot.de.interfaces.DispatcherAdapter
 import com.pp.iot.de.interfaces.Schedulable
 import com.pp.iot.de.interfaces.navigation.NavigationManger
-import com.pp.iot.de.models.enums.PageIndex
 import com.pp.iot.de.models.model.Device
 import com.pp.iot.de.models.model.ExampleMeasurement
+import com.pp.iot.de.service.App
 import com.pp.iot.de.service.utils.scheduleAtPeriod
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.async
 import java.util.Timer
 
-class ServerDataViewModel (private val apiCommunicator: ApiCommunicator,
-                           private val navigationManger: NavigationManger,
-                           private val dispatcherAdapter: DispatcherAdapter) : ViewModelBase(), Schedulable {
+class DeviceMeasurementsViewModel (private val apiCommunicator: ApiCommunicator,
+                                   private val navigationManger: NavigationManger,
+                                   private val dispatcherAdapter: DispatcherAdapter) : ViewModelBase(), Schedulable {
     private val getDataFromServerPeriod: Long = 60000
 
     override fun runTask(timer: Timer) {
         timer.scheduleAtPeriod(getDataFromServerPeriod, {
-            dispatcherAdapter.run({ getDevices() })
+            dispatcherAdapter.run({ getMeasurements() })
         })
     }
 
@@ -33,11 +34,11 @@ class ServerDataViewModel (private val apiCommunicator: ApiCommunicator,
         //we can begin here any operations that are required by current screen
     }
 
-    var devicesList: List<Device> by RaisePropertyChangedDelegate(listOf())
+    var measurementsList: List<ExampleMeasurement> by RaisePropertyChangedDelegate(listOf())
 
-    suspend fun getDevices() {
+    suspend fun getMeasurements() {
         val result = async(CommonPool) {
-            apiCommunicator.getDevices()
+            apiCommunicator.getMeasurementsForDevice(App.kodeinContainer.kodein.instance<ServerDataViewModel>().devicesList[0])
         }.await()
 
         when (result) {
@@ -45,13 +46,9 @@ class ServerDataViewModel (private val apiCommunicator: ApiCommunicator,
                 Log.e("DVM", result.toString())
             }
             is Result.Success -> {
-                devicesList = result.value
+                measurementsList = result.value
                 Log.e("DVM", result.toString())
             }
         }
-    }
-
-    fun navigateDeviceMeasurementsView() {
-        navigationManger.navigate(PageIndex.DeviceMeasurementsPage)
     }
 }
