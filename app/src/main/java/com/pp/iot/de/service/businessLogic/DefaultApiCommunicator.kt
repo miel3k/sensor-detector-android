@@ -48,8 +48,8 @@ class DefaultApiCommunicator : ApiCommunicator {
         return response.second.statusCode.isSuccessfulStatusCode()
     }
 
-    override suspend fun getExampleMeasurement(
-    ): Result<List<ExampleMeasurement>, Exception> {
+    override suspend fun getMeasurementsForDevice(device: Device)
+            : Result<List<ExampleMeasurement>, Exception> {
         apiClient.baseHeaders = mapOf(
                 "Content-Type" to "application/json"
         )
@@ -62,7 +62,7 @@ class DefaultApiCommunicator : ApiCommunicator {
                 )
                 .response()
 
-        Log.e("TAG", response.toString())
+        Log.i("TAG", response.toString())
 
         response.third.fold({
             return Result.of {
@@ -89,7 +89,7 @@ class DefaultApiCommunicator : ApiCommunicator {
                 )
                 .response()
 
-        Log.e("TAG", response.toString())
+        Log.i("TAG", response.toString())
 
         response.third.fold({
             return Result.of {
