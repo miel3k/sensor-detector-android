@@ -21,7 +21,7 @@ class RecyclerAdapter(private val myDataset: Array<String>) :
                                     viewType: Int): RecyclerAdapter.ViewHolder {
         // create a new view
         val textView = LayoutInflater.from(parent.context)
-                .inflate(R.layout.my_text_view, parent, false) as TextView
+                .inflate(R.layout.device_item, parent, false) as TextView
         // set the view's size, margins, paddings and layout parameters
 
         return ViewHolder(textView)

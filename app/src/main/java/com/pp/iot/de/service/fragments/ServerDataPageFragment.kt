@@ -7,13 +7,13 @@ import com.pp.iot.de.models.model.Device
 import com.pp.iot.de.service.R
 import com.pp.iot.de.service.recyclerAdapters.BasicRecyclerAdapter
 import com.pp.iot.de.service.viewModels.ServerDataViewModel
-import kotlinx.android.synthetic.main.my_text_view.view.*
+import kotlinx.android.synthetic.main.device_item.view.*
 import kotlinx.android.synthetic.main.server_data_page.*
 
 class ServerDataPageFragment : FragmentBase<ServerDataViewModel>(ServerDataViewModel::class.java) {
     override fun initBindings() {
         MeasurementsList.layoutManager = LinearLayoutManager(context)
-        bindings.add(viewModel::exampleMeasurementsList.subscribeOneWay {
+        bindings.add(viewModel::devicesList.subscribeOneWay {
             MeasurementsList.adapter =
                     BasicRecyclerAdapter(
                             viewModel.devicesList,
@@ -37,7 +37,7 @@ class ServerDataPageFragment : FragmentBase<ServerDataViewModel>(ServerDataViewM
     }
 
     private fun itemItemTemplate(): View {
-        return layoutInflater.inflate(R.layout.my_text_view, null)
+        return layoutInflater.inflate(R.layout.device_item, null)
     }
 
     private fun itemHolderTemplate(view: View): ItemViewHolder {
