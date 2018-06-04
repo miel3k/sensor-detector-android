@@ -16,11 +16,14 @@ import java.util.Timer
 class ServerDataViewModel (private val apiCommunicator: ApiCommunicator,
                            private val navigationManger: NavigationManger,
                            private val dispatcherAdapter: DispatcherAdapter) : ViewModelBase(), Schedulable {
-    private val getMeasurementPeriod: Long = 60000
+    private val getDataFromServerPeriod: Long = 60000
 
     override fun runTask(timer: Timer) {
-        timer.scheduleAtPeriod(getMeasurementPeriod, {
+        timer.scheduleAtPeriod(getDataFromServerPeriod, {
             dispatcherAdapter.run({ getMeasurement() })
+        })
+        timer.scheduleAtPeriod(getDataFromServerPeriod, {
+            dispatcherAdapter.run({ getDevices() })
         })
     }
 
@@ -37,7 +40,7 @@ class ServerDataViewModel (private val apiCommunicator: ApiCommunicator,
     var exampleMeasurementsList: List<ExampleMeasurement> by RaisePropertyChangedDelegate(listOf(ExampleMeasurement(1, 1000.0)))
     var devicesList: List<Device> by RaisePropertyChangedDelegate(listOf())
 
-    suspend fun getDevices(): Array<String> {
+    suspend fun getDevices() {
         val result = async(CommonPool) {
             apiCommunicator.getDevices()
         }.await()
@@ -51,8 +54,6 @@ class ServerDataViewModel (private val apiCommunicator: ApiCommunicator,
                 Log.e("DVM", result.toString())
             }
         }
-
-        return devicesList.map { it.name }.toTypedArray()
     }
 
     suspend fun getMeasurement() {
