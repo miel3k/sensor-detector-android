@@ -32,8 +32,8 @@ class DeviceDataViewModel (private val apiCommunicator: ApiCommunicator,
     var boundText: String by RaisePropertyChangedDelegate("")
 
     var measurementsList: MutableList<Measurement> by RaisePropertyChangedDelegate(mutableListOf())
-    var gpsMeasurement: Measurement by RaisePropertyChangedDelegate(Measurement("", ""))
-    var lightMeasurement: Measurement by RaisePropertyChangedDelegate(Measurement("", ""))
+    var gpsMeasurement: Measurement by RaisePropertyChangedDelegate(Measurement(7, ""))
+    var lightMeasurement: Measurement by RaisePropertyChangedDelegate(Measurement(3, ""))
 
     suspend fun sendMeasurements(){
         measurementsList.add(gpsMeasurement)

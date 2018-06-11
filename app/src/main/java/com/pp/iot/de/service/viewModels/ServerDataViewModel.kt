@@ -42,11 +42,11 @@ class ServerDataViewModel (private val apiCommunicator: ApiCommunicator,
 
         when (result) {
             is Result.Failure -> {
-                Log.e("DVM", result.toString())
+                //Log.e("DVM", result.toString())
             }
             is Result.Success -> {
                 devicesList = result.value
-                Log.e("DVM", result.toString())
+                //Log.e("DVM", result.toString())
             }
         }
     }

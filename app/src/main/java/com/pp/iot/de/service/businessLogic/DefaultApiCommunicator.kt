@@ -62,7 +62,7 @@ class DefaultApiCommunicator : ApiCommunicator {
                 )
                 .response()
 
-        Log.i("TAG", response.toString())
+        //Log.i("TAG", response.toString())
 
         response.third.fold({
             return Result.of {
@@ -89,7 +89,7 @@ class DefaultApiCommunicator : ApiCommunicator {
                 )
                 .response()
 
-        Log.i("TAG", response.toString())
+        //Log.i("TAG", response.toString())
 
         response.third.fold({
             return Result.of {

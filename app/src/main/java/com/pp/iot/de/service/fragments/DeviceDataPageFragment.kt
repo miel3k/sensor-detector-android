@@ -33,7 +33,7 @@ class DeviceDataPageFragment : FragmentBase<DeviceDataViewModel>(DeviceDataViewM
 
     private val locationListener = object : LocationListener {
         override fun onLocationChanged(location: Location) {
-            val measurement = Measurement("7", "" + location.latitude + "," + location.longitude)
+            val measurement = Measurement(7, "" + location.latitude + "," + location.longitude)
             viewModel.gpsMeasurement = measurement
         }
 
@@ -47,7 +47,7 @@ class DeviceDataPageFragment : FragmentBase<DeviceDataViewModel>(DeviceDataViewM
 
     override fun onSensorChanged(sensorEvent: SensorEvent?) {
         val lightTable = sensorEvent?.values
-        val measurement = Measurement("3", lightTable!![0].toString())
+        val measurement = Measurement(1, lightTable!![0].toString())
         viewModel.lightMeasurement = measurement
     }
 
