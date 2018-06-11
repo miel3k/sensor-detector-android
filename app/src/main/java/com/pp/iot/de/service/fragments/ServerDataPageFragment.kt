@@ -45,12 +45,19 @@ class ServerDataPageFragment : FragmentBase<ServerDataViewModel>(ServerDataViewM
     }
 
     inner class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+        private lateinit var device: Device
+
         init {
-            itemView.setOnClickListener({ viewModel.navigateDeviceMeasurementsView() })
+            itemView.setOnClickListener({
+                viewModel.selectedDevice = this.device
+                viewModel.navigateDeviceMeasurementsView()
+            })
         }
 
         fun bind(device: Device) {
             itemView.ItemTextView.text = device.name
+            this.device = device
         }
     }
 }

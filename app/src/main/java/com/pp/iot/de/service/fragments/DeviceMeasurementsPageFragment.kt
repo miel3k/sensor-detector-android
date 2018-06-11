@@ -3,11 +3,12 @@ package com.pp.iot.de.service.fragments
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
-import com.pp.iot.de.models.model.ExampleMeasurement
+import com.pp.iot.de.models.model.DeviceMeasurement
 import com.pp.iot.de.service.R
 import com.pp.iot.de.service.recyclerAdapters.BasicRecyclerAdapter
 import com.pp.iot.de.service.viewModels.DeviceMeasurementsViewModel
 import kotlinx.android.synthetic.main.device_item.view.*
+import kotlinx.android.synthetic.main.measurement_item.view.*
 import kotlinx.android.synthetic.main.server_data_page.*
 
 class DeviceMeasurementsPageFragment : FragmentBase<DeviceMeasurementsViewModel>(DeviceMeasurementsViewModel::class.java) {
@@ -32,12 +33,12 @@ class DeviceMeasurementsPageFragment : FragmentBase<DeviceMeasurementsViewModel>
         viewModel.navigatedTo()
     }
 
-    private fun itemDataTemplate(item: ExampleMeasurement, holder: ItemViewHolder) {
+    private fun itemDataTemplate(item: DeviceMeasurement, holder: ItemViewHolder) {
         holder.bind(item)
     }
 
     private fun itemItemTemplate(): View {
-        return layoutInflater.inflate(R.layout.device_item, null)
+        return layoutInflater.inflate(R.layout.measurement_item, null)
     }
 
     private fun itemHolderTemplate(view: View): ItemViewHolder {
@@ -45,12 +46,11 @@ class DeviceMeasurementsPageFragment : FragmentBase<DeviceMeasurementsViewModel>
     }
 
     inner class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        init {
-            itemView.setOnClickListener({ itemView.ItemTextView.text = "click" })
-        }
-
-        fun bind(measurement: ExampleMeasurement) {
-            itemView.ItemTextView.text = measurement.measurement.toString()
+        fun bind(measurement: DeviceMeasurement) {
+            var tmp = measurement.measurementType + ' ' + measurement.measurement + ' ' + measurement.unit
+            itemView.measurement.text = tmp
+            tmp = measurement.timestamp.replace('T',' ')
+            itemView.timestamp.text = tmp
         }
     }
 }

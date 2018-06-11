@@ -8,7 +8,6 @@ import com.pp.iot.de.interfaces.Schedulable
 import com.pp.iot.de.interfaces.navigation.NavigationManger
 import com.pp.iot.de.models.enums.PageIndex
 import com.pp.iot.de.models.model.Device
-import com.pp.iot.de.models.model.ExampleMeasurement
 import com.pp.iot.de.service.utils.scheduleAtPeriod
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.async
@@ -34,6 +33,7 @@ class ServerDataViewModel (private val apiCommunicator: ApiCommunicator,
     }
 
     var devicesList: List<Device> by RaisePropertyChangedDelegate(listOf())
+    lateinit var selectedDevice: Device
 
     suspend fun getDevices() {
         val result = async(CommonPool) {

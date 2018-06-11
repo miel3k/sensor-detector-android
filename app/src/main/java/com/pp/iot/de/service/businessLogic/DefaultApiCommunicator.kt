@@ -10,7 +10,7 @@ import com.github.kittinunf.result.Result
 import com.google.gson.reflect.TypeToken
 import com.pp.iot.de.interfaces.ApiCommunicator
 import com.pp.iot.de.models.model.Device
-import com.pp.iot.de.models.model.ExampleMeasurement
+import com.pp.iot.de.models.model.DeviceMeasurement
 import com.pp.iot.de.models.model.Measurement
 import com.pp.iot.de.models.model.MeasurementsList
 import com.pp.iot.de.service.utils.GsonConvert
@@ -49,7 +49,7 @@ class DefaultApiCommunicator : ApiCommunicator {
     }
 
     override suspend fun getMeasurementsForDevice(device: Device)
-            : Result<List<ExampleMeasurement>, Exception> {
+            : Result<List<DeviceMeasurement>, Exception> {
         apiClient.baseHeaders = mapOf(
                 "Content-Type" to "application/json"
         )
@@ -58,7 +58,7 @@ class DefaultApiCommunicator : ApiCommunicator {
         val response = apiClient
                 .request(
                         Method.GET,
-                        "/api/devices/"+device.id
+                        "/api/devices/"+device.id+"/measurements"
                 )
                 .response()
 
@@ -66,9 +66,9 @@ class DefaultApiCommunicator : ApiCommunicator {
 
         response.third.fold({
             return Result.of {
-                GsonConvert.deserializeObject<List<ExampleMeasurement>>(
+                GsonConvert.deserializeObject<List<DeviceMeasurement>>(
                         response.third.get().toString(Charsets.UTF_8),
-                        object : TypeToken<List<ExampleMeasurement>>() {}.type
+                        object : TypeToken<List<DeviceMeasurement>>() {}.type
                 )
             }
         }, {
